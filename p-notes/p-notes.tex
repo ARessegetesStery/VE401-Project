@@ -1,0 +1,179 @@
+\documentclass{article}
+\usepackage{booktabs}
+\usepackage{geometry}
+\usepackage{enumerate}
+\usepackage{setspace}
+\usepackage{amsthm}
+\usepackage{amsmath,amssymb}
+\usepackage{amstext}
+\usepackage[hidelinks]{hyperref}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{color}
+
+\geometry{a4paper,scale=0.85}
+\linespread{1.5}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{remark}{Remark}[section]
+\newtheorem{corollary}{Corollary}[section]
+
+\def\Cov{\mathrm{Cov}}
+\def\E{\mathrm{E}}
+\def\Var{\mathrm{Var}}
+\def\unf#1{\textcolor{blue}{#1}}
+
+\title{VE401 Project Notes}
+\author{ARessegetes Stery}
+\date{\today}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\maketitle
+
+\begin{spacing}{2}
+    \tableofcontents
+\end{spacing}
+
+\newpage
+\section{Summary of the Testing Rules}
+
+We first summarize all the significant parts of the criterion and explain the choices
+
+\subsection{Valid Interval for sample mean $\overline{q}$}
+
+This is the case for test for sample mean with unknown variance. Then the test statistic with mean of the process $\mu$ is 
+$$
+T_{n-1} = \dfrac{\overline{X} - \mu}{S/\sqrt{n}}
+$$
+should follow a $T$-distribution with $n-1$ degrees of freedom. Suppose that the random variable (process) generating all the samples yields a mean of exactly $Q_n$, since a confidence level of 99.5\% is desired, we would like 99.5\% of the times when a sample is generated using the process, it will fall above the threshold. Then, the lower bound of $\overline{q}$ is the lower bound of a 99.5\% confidence interval for the test statistic $T_{n-1}$ when $\mu = Q_n$, which gives
+$$
+\dfrac{\overline{X} - \mu}{S/\sqrt{n}} \geq -t_{0.995, n-1} \quad\Leftrightarrow\quad \overline{X}\geq\mu-\dfrac{S}{\sqrt{n}}t_{0.995, n-1}
+$$ 
+which corresponds to $\lambda\cdot s$ in the third column of the table. 
+
+Note that the $t_{0.995}$ in the table actually refers to $t_{0.995, n-1}$; \unf{include comparison figures in the report}
+
+This can be formalized to be a Fisher Test: we set up the null hypothesis to be
+$$
+H_0: \mu \geq Q_n
+$$
+and we seek to either not reject it, or reject it at a level of significance less than or equal to 0.5\%. 
+
+\unf{May want to first address the problem of formalizing the experiment into a Fisher Test and then argue on the critical region.}
+
+\subsection{Choice of Sample Size}
+
+First of all, if the total size of shipment is quite small (less than or equal to 10), sampling is not necessary since examining all the individual package is sufficient enough and not costly. 
+
+For other cases, we are trying to make an inference on the proportion of the samples that do not fall short in the amount of product. But instead of having samples generating from a repeatable process, we are taking a portion from the population without replacing it. This causes a perturbation on the resulting sample variance. Therefore, in order to determine the appropriate sample size, we need to first investigate the sample variance in this case. We provide the following theorem:
+
+\begin{theorem}[Sample Variance for Sampling without Replacement]
+    Suppose that we draw $n$ samples from a population of size $N$ and variance $\sigma$. Then the sample variance is
+    $$
+    \Var(\overline{X}) = \dfrac{\sigma^2}{n}\cdot\dfrac{N-n}{N-1}
+    $$
+\end{theorem}
+
+We refers to [\unf{add reference}] for the proof
+
+\begin{proof}
+    Recall how the proof is conducted in the case where $N$ is infinite:
+    $$
+    \Var[\overline{X}] = \Var\left[\frac{1}{n}\sum\limits_{k=1}^n X_k\right] = \dfrac{1}{n^2} \sum_{1\leq i,j\leq n}\Cov[X_i, X_j]
+    $$
+    In the case where $N$ is infinite, the influence of replacement is almost zero; and we could conclude that all the $X_i$s are independent, which gives 
+    $$
+    \Cov[X_i, X_j] = \begin{cases}
+        \Var[X_i] &, i = j\\
+        0 &, i\neq j 
+    \end{cases}
+    $$
+    But if $N$ is finite, the covariances should be calculated manually. Denote $\xi_i$ to be the values of the samples, $n_i$s the number of samples sharing value $\xi_i$ and $p_i$ the probability of obtaining value $\xi_i$, we have
+    \begin{align*}
+        \E[X_1 X_2] & = \sum\limits_{i, j}\xi_i \xi_j p_{ij} \\
+                    & = \sum\limits_{i}\xi_i p_i \sum\limits_{j} \xi_j \frac{p_{ij}}{p_i} \\
+                    & = \sum\limits_{i}\xi_i p_i \left(\sum\limits_{j}\left(\xi_j\frac{N p_j}{N-1}\right) - \frac{\xi_i}{N-1} \right) \\ 
+                    & = -\frac{1}{N-1}\underset{\E[X^2]}{\underbrace{\sum\limits_{i}\xi_i^2 p_i}} + \frac{N}{N-1}\left(\sum\limits_{j}\xi_j p_j\right)^2 \\
+                    & = -\frac{1}{N-1}\left(\sigma^2 + \mu^2\right) + \frac{N}{N-1}\mu^2 \\
+                    & = -\frac{1}{N-1}\sigma^2 + \mu^2
+    \end{align*}
+    which gives the covariance of two random samples
+    $$
+    \Cov[X_i, X_j] = \E[X_i X_j] - \E[X_i]\E[X_j] = -\frac{1}{N-1}\sigma^2
+    $$
+    and the variance of $\overline{X}$:
+    $$
+    \Var[\overline{X}] = \frac{1}{n}\sigma^2 + \frac{n-1}{n}\Cov[X_i, X_j] = \dfrac{\sigma^2}{n}\cdot\dfrac{N-n}{N-1}
+    $$
+\end{proof}
+
+Then we can infer the adequate size of sample for inference on proportion given that the population is finite with size $N$. 
+
+\begin{theorem}[Sample Size for Finite Population]
+    For a sample retrieved from a population of size $N$, to ensure the margin of error (half of the width of confidence interval) $d$ at confidence level $\alpha/2$ for two-sided test, we need the sample size $n$ to be at most
+    \begin{equation}\label{ssfinite}
+    n\approx \dfrac{z_{\alpha/2}N}{4d^2(N-1)+z_{\alpha/2}}
+    \end{equation}
+\end{theorem}
+
+\begin{proof}
+    The confidence interval of this estimation for the proportion is given as
+    $$
+    p = \hat{p}\pm z_{\alpha/2} \sqrt{\hat{p}(1-\hat{p})\cdot \dfrac{N-n}{n(N-1)}} =: \hat{p} \pm d
+    $$
+    Requiring $d\geq z_{\alpha/2} \sqrt{\hat{p}(1-\hat{p})\cdot \frac{N-n}{n(N-1)}}$ gives
+    $$
+    n\geq \dfrac{z_{\alpha/2}\hat{p}(1-\hat{p})N}{d^2(N-1)+z_{\alpha/2}\hat{p}(1-\hat{p})} = \dfrac{z_{\alpha/2}N}{\frac{d^2(N-1)}{\hat{p}(1-\hat{p})}+z_{\alpha/2}}
+    $$
+    where since $\hat{p}(1-\hat{p})\leq\frac{1}{4}$ the right hand side is bounded above by
+    $$
+    \dfrac{z_{\alpha/2}N}{\frac{d^2(N-1)}{\hat{p}(1-\hat{p})}+z_{\alpha/2}} \leq \dfrac{z_{\alpha/2}N}{4d^2(N-1)+z_{\alpha/2}}
+    $$
+    which gives the minimal size of samples to ensure margin of error $d$
+    $$
+    n\geq \dfrac{z_{\alpha/2}N}{4d^2(N-1)+z_{\alpha/2}}
+    $$
+\end{proof}
+
+The choice of sample size $n$ based on knowledge of population size $N$ is demonstrated in the following table. If the choices of numbers are reasonable, using \eqref{ssfinite} with $z_{\alpha/2} = z_{0.995} = 2.575$ we should see that the estimated $d$ values are consistent. 
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{ccc}
+        \toprule
+        $N$ & $n$ & Estimated $d$-value \\
+        \midrule
+        1-10 & $N$ & N/A \\
+        11-50 & 10 & [0.08, 0.23] \\
+        51-99 & 13 & [0.19, 0.21] \\
+        100-500 & 50 & [0.08, 0.11]\\ 
+        501-3200 & 80 & [0.08, 0.09]\\
+        $>$3200 & 125 & [0.08, 0.09] \\
+        \bottomrule
+    \end{tabular}
+    \caption{Tabulated Values for Population Size $N$ and Corresponding Sample Size $n$ [\unf{proj material}]}
+\end{table}
+
+with which we have the conclusions
+
+\begin{itemize}
+    \item The test is organized aiming at tolerance of defective rate for large shipments ($N > 100$) of at most 
+    $$
+    D = d_{\text{test}} + d_{\text{tolerance}} = 11\% + \frac{5}{80} = 17\%
+    $$
+    where $d_{\text{test}}$ is the margin of error for the test, which is at most 0.11 for $N > 100$, and $d_{\text{tolerance}}$ is the tolerable defective rate in the samples examined, which is at most $5/80$ for $N\in[501, 3200]$. 
+    \item For small shipments $N \leq 100$, the defective rate allowed can be as high as
+    $$
+    D = d_{\text{test}} + d_{\text{tolerance}} = 21\% + \frac{1}{13} = 29\%
+    $$
+    with the same notation. Specifically, for $N\in[51, 99]$ the lower bound of largest allowed defective rate is 0.19, which is a relatively high defective rate. This choice of design may result from avoiding separating into too many cases for small $N$ or reasons specific with products with small shipments, or may be just an error in setting up the criterion.
+\end{itemize}
+
+\subsection{Maximum Allowed Number of $T_1$ shortage}
+
+\end{document}
