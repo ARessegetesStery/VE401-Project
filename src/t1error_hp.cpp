@@ -119,15 +119,17 @@ int main()
     // int N, n;
     // cin >> N >> n;
     ofstream fout("t1.csv");
-    for (int cnt = 20; cnt <= 50; ++cnt)
-        t1Tolerance(cnt, 10, fout);
-    for (int cnt = 51; cnt <= 99; ++cnt)
-        t1Tolerance(cnt, 32, fout);
-    for (int cnt = 100; cnt <= 500; ++cnt)
-        t1Tolerance(cnt, 50, fout);
-    for (int cnt = 501; cnt <= 3200; ++cnt)
-        t1Tolerance(cnt, 80, fout);
-    for (int cnt = 3201; cnt <= 5000; ++cnt)
-        t1Tolerance(cnt, 125, fout);
+    for (int cnt = 40; cnt <= 60; ++cnt)
+        t1Tolerance(cnt, 35, fout);
+    for (int cnt = 61; cnt <= 80; ++cnt)
+        t1Tolerance(cnt, 47, fout);
+    for (int cnt = 81; cnt <= 100; ++cnt)
+        t1Tolerance(cnt, 49, fout);
+    for (int cnt = 101; cnt <= 200; ++cnt)
+        t1Tolerance(cnt, 64, fout);
+    for (int cnt = 201; cnt <= 300; ++cnt)
+        t1Tolerance(cnt, 67, fout);
+    for (int cnt = 301; cnt <= 400; ++cnt)
+        t1Tolerance(cnt, 81, fout);
     fout.close();
 }
