@@ -42,7 +42,9 @@
 \newpage
 \section{Summary of the Testing Rules}
 
-We first summarize all the significant parts of the criterion and explain the choices
+We first summarize all the significant parts of the criterion and explain the choices 
+
+\unf{Unify the terminology: \textbf{batch} for the population, \textbf{package} for individual sample, and \textbf{samples} for the general samples}
 
 \subsection{Valid Interval for sample mean $\overline{q}$}
 
@@ -172,8 +174,86 @@ with which we have the conclusions
     D = d_{\text{test}} + d_{\text{tolerance}} = 21\% + \frac{1}{13} = 29\%
     $$
     with the same notation. Specifically, for $N\in[51, 99]$ the lower bound of largest allowed defective rate is 0.19, which is a relatively high defective rate. This choice of design may result from avoiding separating into too many cases for small $N$ or reasons specific with products with small shipments, or may be just an error in setting up the criterion.
+    \item In order to ensure the coherence exhibited in the rules, we suggest that the \textbf{$n$ for $N$ in 51-99 should be changed into 32}, which is solved with $d=0.08$ using \ref{ssfinite}. In following discussions on this table we will comment on the result with calibrated $n$ value separately besides using the originally tabled value. 
 \end{itemize}
 
 \subsection{Maximum Allowed Number of $T_1$ shortage}
+
+\subsubsection{Specification of the Requirements}
+
+\begin{definition}[$T_1$ Error, $T_2$ error]
+    \unf{ref[2.1.2.3/4]} For a given standard $Q$ with the applicable tolerable deficiency $T$, a sample $Q_i$ is said to be of $T_1$ error if
+    $$
+    Q-2T \leq Q_i < Q-T
+    $$
+    and is said to be of $T_2$ error if
+    $$
+    Q_i < Q-2T
+    $$
+\end{definition}
+
+We first summarize the criterion for inspection [\unf{5.3}]:
+
+\begin{enumerate}
+    \item[(A.1)] The sample mean is no less than the labeled nominal amount.
+    \item[(A.2)] The proportion of samples with nominal amount less than the required amount (labeled amount minus the tolerable deficiency) is less than 2.5\%.
+    \item[(A.3)] There are no $T_2$ errors in the samples. 
+\end{enumerate}
+
+together with the requirement of the inspection\footnote{The sequence of presenting the rules is slightly changed so that they are classified in terms of statistic examined, instead of type of errors.}:
+\begin{enumerate}
+    \item[(B.1)] If a shipment is correctly manufactured, i.e. with $\mu\geq Q$ where $Q$ is the labeled amount, than the probability of this being rejected is less than 0.5\%.
+    \item[(B.2)] If the sample mean is less than $Q-0.74s$, then 90\% of the time we can spot it out (and reject that).
+    \item[(B.3)] If the proportion of $T_1$ error is no more than 2.5\%, then the probability of it being rejected is no more than 5\%.
+    \item[(B.4)] If the proportion of $T_1$ and $T_2$ error combined is 9\%, then 90\% of the time we can spot it out (and reject that).
+\end{enumerate}
+
+Note that the general criterion does not specify the number of $T_1$ errors allowed in the inspection. This depends on the actual size of shipment and needs to be determined accordingly. We now seek to verify the correctness of the tolerable $T_1$ errors in the form. 
+
+In the following discussion, we denote $N_1, N_2$ to be the number of sampled packages of $T_1$ error and $T_2$ error in the population, with $n_1, n_2$ the corresponding number of sampled packages in the samples. The goal is to find the maximum tolerable numbers of $T_1$ error in the samples $k_{N}$ given the size of the whole batch $N$. 
+
+Some of the discussion results are referred from [\unf{international recommendation}].
+
+\subsubsection{Requirement of (B.3)}
+
+If a sample is not rejected according to the criterion, it must satisfy that $P[Q_i < Q - T] \leq 0.025$, i.e. 
+$$
+\dfrac{Q_i - Q}{T/z_{0.025}} = \dfrac{Q_i - Q}{T/1.96}\sim N(0,1)
+$$
+Therefore, we require that
+\begin{equation}\label{b3}
+    P[n_1\leq k, n_2 = 0\mid N_1 = 0.025N, N_2 = 0] \geq 0.95
+\end{equation}
+
+\subsubsection{Requirement of (B.4)}
+
+Suppose that 9\% of the batch evaluates to be less than $T$, the distribution of $Q$ evaluates to be
+$$
+\dfrac{Q_i - Q}{T/z_{0.09}} = \dfrac{Q_i - Q}{T/1.34}\sim N(0,1)
+$$
+Then 
+$$
+N_2 = P[\dfrac{Q_i - Q}{T/1.34} < -2.68] = P[Z < -2.68] = 0.0037N, \quad N_1 = [-2.68\leq Z < 1.34] = 0.0863N
+$$
+The requirement becomes
+\begin{equation}\label{b4}
+    P[n_1\leq k, n_2 = 0\mid N_1 = 0.0863N, N_2 = 0.0037N] < 0.1
+\end{equation}
+
+\subsubsection{Verification of Tolerable $T_1$ Errors}
+
+Since $n_1$ and $n_2$ are chosen simultaneously, they follow a bi-variate hyper-geometric distribution, which has the probability density function
+$$
+f(n_1, n_2) = \dfrac{\binom{N_1}{n_1}\binom{N_2}{n_2}\binom{N-N_1-N_2}{n-n_1-n_2}}{\binom{N}{n}}
+$$
+Taking into account of both \ref{b3} and \ref{b4}, we need the stricter restriction on $k$, i.e. the smaller one between the two smallest $k$s that satisfy \ref{b3} and \ref{b4}. We run a numerical program\footnote{Source code is attached as supplementary materials} to evaluate the $k$s. 
+
+The results we obtain are in the \texttt{t1\_en.csv}, \texttt{t1\_wrongdata.csv}, \texttt{t1\_cn.csv} files tested on the case for \unf{p18, International Recom}, raw data in the Chinese guide \unf{4.3.2} and the calibrated data respectively. We conclude that 
+
+\begin{itemize}
+    \item Generally the tabled $k$s in the English version \unf{ref} appropriately satisfies the requirement (B.3) and (B.4) 
+    \item The $k$ value in the Chinese version of the table are higher than the bound calculated. This results from the smaller $n$ value chosen, making the bound stricter.
+    \item We have further evidence that the criterion $n=13$ in the third row of \unf{ref} is indeed a problem as it leads to $k = 0$ in the calculation.
+\end{itemize}
 
 \end{document}
