@@ -71,8 +71,6 @@ double bHyperGeometricPDF(int n, int n1, int n2, int N, int N1, int N2)
     HyperInt bNn2 = binom(N2, n2);
     HyperInt t1 = bNn / binom(N - N1 - N2, n - n1 - n2);
     double res = 1.0 / HItoDouble(t1) * HItoDouble(bNn1) * HItoDouble(bNn2);
-    // HyperInt resInv = bNn / binom(N1, n1) / binom(N2, n2) / binom(N - N1 - N2, n - n1 - n2);
-    cout << res << endl;
     return res;
 }
 
@@ -86,7 +84,6 @@ int t1Tolerance(int N, int n, ofstream& os)
     for (int tol = 0; tol <= n; ++tol)
     {
         cumulP += bHyperGeometricPDF(n, tol, 0, N, floor(0.025*N) + 1, 0);
-        // cout << cumulP << endl;
         if (cumulP >= 0.95)
         {
             b3Tol = tol;
@@ -101,35 +98,60 @@ int t1Tolerance(int N, int n, ofstream& os)
     for (int tol = 0; tol <= floor(0.0863*N) + 1; ++tol)
     {
         cumulP += bHyperGeometricPDF(n, tol, 0, N, floor(0.0863*N) + 1, floor(0.0037*N));
-        // cout << n << " " << tol << " " << 0 << " " << N << " " << floor(0.0863*N) + 1 << " " << floor(0.0037*N) << endl;
-        // cout << cumulP << endl;
         if (cumulP >= 0.10)
         {
             b4Tol = tol == 0 ? 0 : tol - 1;
             break;
         }
     }
-    // cout << b3Tol << " " << b4Tol << endl;
     os << n << "," << N << "," << b3Tol << "," << b4Tol << "," << min(b3Tol, b4Tol) << endl;
     return min(b3Tol, b4Tol);
 }
 
 int main()
 {
-    // int N, n;
-    // cin >> N >> n;
     ofstream fout("t1.csv");
-    for (int cnt = 40; cnt <= 60; ++cnt)
-        t1Tolerance(cnt, 35, fout);
-    for (int cnt = 61; cnt <= 80; ++cnt)
-        t1Tolerance(cnt, 47, fout);
-    for (int cnt = 81; cnt <= 100; ++cnt)
-        t1Tolerance(cnt, 49, fout);
-    for (int cnt = 101; cnt <= 200; ++cnt)
-        t1Tolerance(cnt, 64, fout);
-    for (int cnt = 201; cnt <= 300; ++cnt)
-        t1Tolerance(cnt, 67, fout);
-    for (int cnt = 301; cnt <= 400; ++cnt)
-        t1Tolerance(cnt, 81, fout);
+
+    /*  Generating k in Table 2 of OIML R 87:2016   */
+
+    // for (int cnt = 40; cnt <= 60; ++cnt)
+    //     t1Tolerance(cnt, 35, fout);
+    // for (int cnt = 61; cnt <= 80; ++cnt)
+    //     t1Tolerance(cnt, 47, fout);
+    // for (int cnt = 81; cnt <= 100; ++cnt)
+    //     t1Tolerance(cnt, 49, fout);
+    // for (int cnt = 101; cnt <= 200; ++cnt)
+    //     t1Tolerance(cnt, 64, fout);
+    // for (int cnt = 201; cnt <= 300; ++cnt)
+    //     t1Tolerance(cnt, 67, fout);
+    // for (int cnt = 301; cnt <= 400; ++cnt)
+    //     t1Tolerance(cnt, 81, fout);
+
+    /*  Generating k in 4.3.2 of JJF 1070-2005   */
+
+    // for (int cnt = 11; cnt <= 50; ++cnt)
+    //     t1Tolerance(cnt, 10, fout);
+    // for (int cnt = 51; cnt <= 99; ++cnt)
+    //     t1Tolerance(cnt, 13, fout);
+    // for (int cnt = 100; cnt <= 500; ++cnt)
+    //     t1Tolerance(cnt, 50, fout);
+    // for (int cnt = 501; cnt <= 3200; ++cnt)
+    //     t1Tolerance(cnt, 80, fout);
+    // for (int cnt = 3201; cnt <= 5000; ++cnt)
+    //     t1Tolerance(cnt, 125, fout);
+
+    /*  Generating k in 4.3.2 of JJF 1070-2005 with calibrated n in column 3  */
+
+    // for (int cnt = 11; cnt <= 50; ++cnt)
+    //     t1Tolerance(cnt, 10, fout);
+    // for (int cnt = 51; cnt <= 99; ++cnt)
+    //     t1Tolerance(cnt, 32, fout);
+    // for (int cnt = 100; cnt <= 500; ++cnt)
+    //     t1Tolerance(cnt, 50, fout);
+    // for (int cnt = 501; cnt <= 3200; ++cnt)
+    //     t1Tolerance(cnt, 80, fout);
+    // for (int cnt = 3201; cnt <= 5000; ++cnt)
+    //     t1Tolerance(cnt, 125, fout);
+
     fout.close();
 }
