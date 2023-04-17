@@ -21,6 +21,7 @@
 \newtheorem{remark}{Remark}[section]
 \newtheorem{corollary}{Corollary}[section]
 
+\def\d{\mathrm{d}}
 \def\Cov{\mathrm{Cov}}
 \def\E{\mathrm{E}}
 \def\Var{\mathrm{Var}}
@@ -255,5 +256,58 @@ The results we obtain are in the \texttt{t1\_en.csv}, \texttt{t1\_wrongdata.csv}
     \item The $k$ value in the Chinese version of the table are higher than the bound calculated. This results from the smaller $n$ value chosen, making the bound stricter.
     \item We have further evidence that the criterion $n=13$ in the third row of \unf{ref} is indeed a problem as it leads to $k = 0$ in the calculation.
 \end{itemize}
+
+\section{Non-Central $T$-Distribution}
+
+If the null hypothesis with a test statistic that follows student T-distribution is false, then non-central student T-distribution shall be used instead as the test statistic for the alternative hypothesis. The random variable
+$$
+T_{\gamma, \delta}=\frac{Z+\delta}{\sqrt{\chi_\gamma^2/\gamma}}
+$$
+is said to follow non-central student T-distribution with parameters $\gamma$ degrees of freedom and $\delta$ non-centrality. $\chi_{\gamma}^2$ is Chi-square distributed random variable with $\gamma$ degrees of freedom. Since $\frac{(n-1)S^2}{\sigma^2}$ follows Chi-square distribution with $n-1$ degrees of freedom, so
+$$
+T_{n-1,\mu\sqrt{n}/\sigma}=\frac{\frac{\Bar{X}-\mu}{\sigma/\sqrt{n}}+\frac{\mu}{\sigma/\sqrt{n}}}{\sqrt{\frac{(n-1)S^2}{\sigma^2}\frac{1}{n-1}}}=\frac{\Bar{X}}{S/\sqrt{n}}
+$$
+is non-central student T-distributed with $n-1$ degrees of freedom and $\frac{\mu\sqrt{n}}{\sigma}$ non-centrality.
+
+We first set up the null hypothesis and the alternative hypothesis. Under the context of the test, we would want the hypotheses to be
+$$
+H_0 : \mu\geq\mu_0 \quad\quad\quad\quad H_1 : \mu\leq\mu_0 - \sigma
+$$
+where we hope not to reject $H_0$ if the sample is obtained in the worst case allowed, i.e. from a batch with mean $\mu_0$. The probability of conducting a Type I Error, which is that of rejecting samples from the boundary case of tolerable production, is designated to be $\alpha = 0.005$. This gives the critical region
+$$
+\text{We reject }H_0\text{ if the statistic } \dfrac{Z}{\sqrt{\chi_{\gamma}^2/\gamma}} \text{ falls in}\ \left(-\infty, -t_{0.005, n-1}\right]
+$$
+and an approach to calculate the probability of conducting a Type II Error ($\beta$)
+$$
+\beta = \int_{-t_{0.005, n-1}}^{\infty} f_{T_{n-1, \frac{\mu\sqrt{n}}{\sigma}}}(x) \d x
+$$
+This gives the Operating Characteristic (OC) Curve as below:
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[scale=0.5]{img/oc_noncentral_t.png}
+    \caption{OC Curve for One-Tailed Test of Noncentral $T$-Distribution with $n$ Specified in Table 4.3.2}
+\end{figure}
+
+From the OC Curve we can see that the test is fairly powerful. With a sample size of $n\geq50$ we can ensure that for samples with average of shortfall at least one standard deviation in package contents, we will almost surely reject $H_0$.
+
+Quantitatively, calculating the results explicitly gives
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{cc}
+        \toprule
+        $n$ & $P[\text{Reject }H_0]$  \\
+        \midrule
+        10 & 50.4\% \\
+        13 & 70.1\% \\
+        50 & 99.9\%  \\
+        80 & 100\% \\ 
+        125 & 100\% \\
+        \bottomrule
+    \end{tabular}
+    \caption{Probability of Rejecting $H_0$ for Batches not Fulfilling Requirements}
+\end{table}
+
 
 \end{document}
