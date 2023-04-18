@@ -60,6 +60,7 @@
 \thispagestyle{empty}
 
 \tableofcontents
+\thispagestyle{empty}
 \newpage
 \pagenumbering{arabic}
 
@@ -496,24 +497,134 @@ Similarly, we refer to Table 2 in \cite{OIML2016} to calculate the allowed margi
     \caption{Tabulated Values for Population Size $N$ and Corresponding Sample Size $n$ in \cite{OIML2016}}
 \end{table}
 
-In the test we can see that the margin of error $d$ is generally organized arount 0.08, which is quite consistent. Therefore, we could claim that there should not exist major errors in choosing the $n$ value according to the batch size $N$ given. 
+In the test we can see that the margin of error $d$ is generally organized arount 0.08, which is quite consistent. Therefore, we could claim that there should not exist major errors in choosing the $n$ value according to the batch size $N$ given in \cite{OIML2016}. 
 
 \subsection{Test of $n$ Using Sample Mean}
 
+The criterion published 2016 \cite{OIML2016} specifies how the choice of $n$ should be determined given the batch size $N$. We quote the derivation of the choice here. Since \cite{OIML2016} intrinsically follows this criterion, after presenting the derivation we will simply verify whether the criterion given in \cite{JJF2005} pass this test. 
 
+\begin{theorem}
+    In order to satisfy the requirement specified by (B.2), the statistic should satisfy that
+    \begin{equation}\label{samplemean}
+        \sqrt{\dfrac{n(N-1)}{N-n}} \geq \dfrac{t_{0.1,n-1} - t_{0.995,n-1}}{0.74}
+    \end{equation}
+\end{theorem}
+
+\begin{proof}
+    Using the approximation that $s\approx\sigma$, suppose that for the lot being tested is of mean $Q = Q_0 - 0.74\sigma$, then the sample mean should follow the following distribution:
+    $$
+    \overline{Q} \sim N\left( -0.74\sigma, \dfrac{\sigma^2}{n}\left( \dfrac{N-n}{N-1} \right) \right)
+    $$
+    By criterion (B.3), we require
+    $$
+    P\left[ \overline{Q} < st_{0.995, n-1}\sqrt{\dfrac{N-n}{n(N-1)}} \right] \geq 0.9
+    $$
+    where the left hand side can be simplified by again using the approximation $s\approx\sigma$
+    $$
+    P\left[ \overline{Q} < st_{0.995, n-1}\sqrt{\dfrac{N-n}{n(N-1)}} \right] \approx P\left[ T_{n-1} < t_{0.995,n-1} + 0.74\sqrt{\dfrac{n(N-1)}{N-n}} \right]
+    $$
+    Apply proper substitution and we have
+    $$
+    \sqrt{\dfrac{n(N-1)}{N-n}} \geq \dfrac{t_{0.1,n-1} - t_{0.995,n-1}}{0.74}
+    $$
+\end{proof}
+
+Since the requirement ($B.3$) is shared by \cite{JJF2005} and \cite{OIML2016}, we would expect that criterion in \cite{JJF2005} would also satisfy \eqref{samplemean}. Thereby we table out all the statistics and do a comparison:
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{cccc}
+        \toprule
+        $N$ & $n$ & $\frac{n(N-1)}{N-n}$ & $\frac{t_{0.1,n-1} - t_{0.995,n-1}}{0.74}$ \\
+        \midrule
+        1-10 & $N$ & N/A & N/A \\
+        11-50 & 10 & [12.25, 100] & 6.26 \\
+        51-99 & 13 & [14.8, 17] & 5.96 \\
+        100-500 & 50 & [55, 99] & 5.37 \\ 
+        501-3200 & 80 & [82, 95] & 5.31 \\
+        $>$3200 & 125 & [125, 130] & 5.28 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Tabulated Values for Population Size $N$ and Corresponding Sample Size $n$ Together with Statistics mentioned in \eqref{samplemean}}
+\end{table}
+
+In the table we can see that $\frac{n(N-1)}{N-n}$ is significantly larger than $\frac{t_{0.1,n-1} - t_{0.995,n-1}}{0.74}$, which indicates that \cite{JJF2005} does not have significant defect in detecting errors in the mean of the sample.
 
 \subsection{Verification of Type I Error Tolerance; Cross Reference of Sample Size $n$}
 
+We finally look into the where does the number of tolerable defects in the table comes from. Since the measurement of errors is more of a restriction on the variance given that other criteria (A.1) have applied strict restrictions on the mean. Therefore, in this section we will mainly focus on (B.3) and (B.4); and conduct calculations correspondingly.
+
+As the general criterion does not specify the number of $T_1$ errors allowed in the inspection, the number depends on the actual size of shipment and needs to be determined accordingly. We now seek to verify the correctness of the tolerable $T_1$ errors in the form. 
+
+In the following discussion, we denote $N_1, N_2$ to be the number of sampled packages of $T_1$ error and $T_2$ error in the population, with $n_1, n_2$ the corresponding number of sampled packages in the samples. The goal is to find the maximum tolerable numbers of $T_1$ error in the samples $k_{N}$ given the size of the whole batch $N$. Some of the discussion results are quoted from Appendix F in \cite{OIML2016}.
+
+\subsubsection{Requirement of (B.3)}
+
+If a sample is not rejected according to the criterion, it must satisfy that $P[Q_i < Q - T] \leq 0.025$, i.e. 
+$$
+\dfrac{Q_i - Q}{T/z_{0.025}} = \dfrac{Q_i - Q}{T/1.96}\sim N(0,1)
+$$
+Therefore, we require that
+\begin{equation}\label{b3}
+    P[n_1\leq k, n_2 = 0\mid N_1 = 0.025N, N_2 = 0] \geq 0.95
+\end{equation}
+
+\subsubsection{Requirement of (B.4)}
+
+Suppose that 9\% of the batch evaluates to be less than $T$, the distribution of $Q$ evaluates to be
+$$
+\dfrac{Q_i - Q}{T/z_{0.09}} = \dfrac{Q_i - Q}{T/1.34}\sim N(0,1)
+$$
+Then 
+$$
+N_2 = P[\dfrac{Q_i - Q}{T/1.34} < -2.68] = P[Z < -2.68] = 0.0037N, \quad N_1 = [-2.68\leq Z < 1.34] = 0.0863N
+$$
+The requirement becomes
+\begin{equation}\label{b4}
+    P[n_1\leq k, n_2 = 0\mid N_1 = 0.0863N, N_2 = 0.0037N] < 0.1
+\end{equation}
+
+\subsubsection{Verification of Tolerable $T_1$ Errors}
+
+Since $n_1$ and $n_2$ are chosen simultaneously, they follow a bi-variate hyper-geometric distribution, which has the probability density function
+$$
+f(n_1, n_2) = \dfrac{\binom{N_1}{n_1}\binom{N_2}{n_2}\binom{N-N_1-N_2}{n-n_1-n_2}}{\binom{N}{n}}
+$$
+Taking into account of both \eqref{b3} and \eqref{b4}, we need the stricter restriction on $k$, i.e. the smaller one between the two smallest $k$s that satisfy \eqref{b3} and \eqref{b4}. We run a numerical program \ref{cppcode} to evaluate the $k$s. 
+
+The results we obtain are listed in \ref{toleranceres}\footnote{As the size that we ran simulation are in really large numbers, we attach them as appendices to preserve the smoothness of our discussion}. From the calculated results we can conclude that
+
+\begin{itemize}
+    \item Generally the tabled $k$s in \cite{OIML2016} appropriately satisfies the requirement (B.3) and (B.4) 
+    \item The $k$ value in the Chinese version of the table are higher than the bound calculated. This results from the smaller $n$ value chosen, making the bound stricter.
+    \item We have further evidence that the criterion $n=13$ in the third row of 4.3.2 in \cite{JJF2005} is indeed a problem as it leads to $k = 0$ in the calculation.
+\end{itemize}
 
 \section{General Comparison between \cite{JJF2005} and \cite{OIML2016}}
 
+We have made comparisons between \cite{JJF2005} and \cite{OIML2016} in various perspectives. It is therefore worth summarizing all the pros and cons of adopting either method, and try to unveil some insights into conducting statistical tests.
+
+\begin{itemize}
+    \item The criterion provided in Table 2 of \cite{OIML2016} is much more accurate than the one described in section 4.3.2 in \cite{JJF2005}. The bounds set are more precise, with the control on both variance and mean more delicate.
+    \item The table provided in Annex I in \cite{OIML2016} is actually the most precise table among all the results; but it is not realistic and useful as there are so many entries. The process of looking up values will be tedious. 
+    \item The table provided in section 4.3.2 in \cite{JJF2005} is actually looking for higher precision in large production batches (where $n$ is higher than the required value) and much looser in small production batches (where $n$ is smaller than the actually effective $n$). This choice may originate from the fact that the importance of having sufficient amount depends on how large the batch actually is. The division of $N$ is also not so accurate. While this practice loses precision in spotting defective batches, the process is much more straightforward, which makes the inspection easier to conduct. 
+\end{itemize}
+
 \section{Example of Content Inspection}
+
+
 
 \newpage
 \section{Appendix}
 
 \subsection{Appendix A: Source Code for Plotting Functions}
 \label{mmacode}
+
+\subsection{Appendix B: Source Code for Calculating Tolerable $T_1$ Errors}
+\label{cppcode}
+
+\subsection{Appendix C: Results of Numerically Calculating Tolerable $T_1$ Errors}
+\label{toleranceres}
 
 \newpage
     \section{References}
