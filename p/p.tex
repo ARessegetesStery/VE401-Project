@@ -48,9 +48,9 @@
 		Project Group 26 \\ 
         \begin{tabular}{ll}
         \normalsize Meng Yuqi & \normalsize 521370910030  \\
+		\normalsize Tanchavalit Ekkanat & \normalsize 521370990007  \\
         \normalsize Liu Yuzhuo & \normalsize 520021910454  \\ 
-		\normalsize Tanchavalit Ekkanat & \normalsize 123  \\
-        \normalsize Zhang Maizhe & \normalsize 123  \\
+        \normalsize Zhang Maizhe & \normalsize 521370910157  \\
         \end{tabular}}
         
 
@@ -171,7 +171,7 @@ We similarly present the table specified in \cite{OIML2016}\footnote{In \cite{OI
     \caption{Designated Sample Size $n$ Given Batch Size $N$}
 \end{table}
 
-The statistic generally falls into a centered region of 2.9 $\pm$ 0.6. Further results can not be drawn from this approximation as it is quite intuitive and not yet verified. We can vaguely sense that this table is less likely to be wrong than \cite{JJF2005}; but further investigations are required, which we will present in juxtaposition with the that of the previous table. 
+The statistic generally falls into a centered region of 2.9 $\pm$ 0.6. There seem to be some anomaly in the case where $N$ is in the range 401-500; but the difference is small and insufficient for drawing any conclusion. Further results can not be drawn from this approximation as it is quite intuitive and not yet verified. We can vaguely sense that this table is less likely to be wrong than \cite{JJF2005}; but further investigations are required, which we will present in juxtaposition with the that of the previous table. 
 
 \section{Hypothesis Testing}
 
@@ -184,9 +184,9 @@ Besides explaining the source of the statistics listed in the table, we would al
 In Neyman-Pearson Decision Theorem, the null hypothesis and the alternative hypothesis should be symmetric in terms of being accepted and rejected. However, there are some asymmetries in the designation of the hypotheses as the requirements of probability of conducting a Type I Error and that of conducting a Type II Error are not necessarily the same. 
 
 We first state explicitly the Neyman-Pearson Test that we are conducting. According to the criterion (A.1) and (B.3), the boundary cases are either the batch is of mean $Q$ exactly equal to the labeled amount $Q_0$, or it has a shortfall of at least $\sigma$ (that is, of at least $T_1$ Error). We set up the null hypothesis and alternative hypothesis to be
-$$
-H_0 : Q\geq Q_0 \quad\quad\quad\quad H_1 : Q\leq Q_0 - \sigma
-$$
+\begin{equation}\label{hypothesis1}    
+    H_0 : Q\geq Q_0 \quad\quad\quad\quad H_1 : Q\leq Q_0 - \sigma
+\end{equation}
 and if we manage to reject $H_0$ at certain (low) level of significance, we would conclude that the batch does not satisfy the requirement. 
 
 In order to take into account potential differences in both approaches, in the following discussion we will first do an ordinary Neyman-Pearson Test and then have a discussion on whether we could switch $H_0$ and $H_1$; and why we are not using that in this case
@@ -250,9 +250,9 @@ In order to grasp how the non-centrality influences the behavior of probability 
 From the figure we can infer some properties of noncentral $T$-distribution: similar to $T$-distribution, it is uni-modal, but has a skewed behavior towards the direction of non-centrality; and the skewing effect increases as the non-centrality increases. Again similar to $T$-distribution, as the degrees of freedom increases noncentral $T$-distribution behaves more and more like normal distribution with mean the same as the non-centrality. This makes sense as with the sample size increasing, the unbiased estimator for sample variance will have a closer and closer approximation of the actual variance $\sigma^2$, in which case we have exactly the normal distribution.
 
 Using this, we now seek to use this for power analysis. Manipulating the expressions, we have
-$$
-T_{n-1,\mu\sqrt{n}/\sigma}=\frac{\frac{\Bar{X}-\mu}{\sigma/\sqrt{n}}+\frac{\mu}{\sigma/\sqrt{n}}}{\sqrt{\frac{(n-1)S^2}{\sigma^2}\frac{1}{n-1}}}=\frac{\Bar{X}}{S/\sqrt{n}}
-$$
+\begin{equation}\label{noncentralt}
+    T_{n-1,\mu\sqrt{n}/\sigma}=\frac{\frac{\Bar{X}-\mu}{\sigma/\sqrt{n}}+\frac{\mu}{\sigma/\sqrt{n}}}{\sqrt{\frac{(n-1)S^2}{\sigma^2}\frac{1}{n-1}}}=\frac{\Bar{X}}{S/\sqrt{n}}
+\end{equation}
 which follows a non-central student T-distributed with $n-1$ degrees of freedom and $\frac{\mu\sqrt{n}}{\sigma}$ non-centrality. That is, if the sample is taken from a batch that does not has mean $\mu$, its distribution will be like this. In this case, we can also interpret $\mu$ as the difference between the actual mean and the mean that we estimate (or the mean that is stated in the null hypothesis).
 
 Since we have obtained the critical region to be
@@ -294,12 +294,220 @@ Without calculating explicitly, we can claim that the test is fairly powerful. S
         125 & 1.000 & 1.000 \\
         \bottomrule
     \end{tabular}
-    \caption{$\beta$ for Noncentral $T$-Distribution of Different Non-centrality with Varying $n$}
+    \caption{Power of Testing Using Noncentral $T$-Distribution of Different Non-centrality with Varying $n$}
 \end{table}
 
-\noindent Note that we table $1-\beta$ instead of $\beta$ to align with the OC Curve. The evaluations give us concrete evidence that the test is pwoerful enough for $n\geq 50$.
+\noindent Note that we table $1-\beta$ instead of $\beta$ to align with the OC Curve and to show the power of the test. The evaluations give us concrete evidence that the test is powerful enough for $n\geq 50$.
 
-\subsection{Why not switching $H_0$ and $H_1$?}
+\subsection{Why don't We Switch $H_0$ and $H_1$?}
+
+In the lectures \cite{Ho2023} we have concluded that Neyman-Pearson Decision Theory yields symmetric results with respect to $H_0$ and $H_1$, i.e. it does not matter whether we choose $H_0$ to be $Q \geq Q_0$ or $Q \leq Q_0 - \sigma$. Therefore, we will try the other way round; we set up the hypotheses according to (B.2):
+\begin{equation}\label{hypothesis2}
+    H_0 : Q\leq Q_0 - 0.74\sigma \quad\quad\quad\quad H_1 : Q\geq Q_0
+\end{equation}
+and conduct Neyman-Pearson Hypothesis Testing as usual. Theoretically the results should be the same. We will then comment on why we choose \eqref{hypothesis1} for the test. 
+
+Suppose that the test statistic is on the boundary value of $H_0$. Then the statistic should satisfy the following conditions according to \eqref{noncentralt}:
+$$
+T_{n-1,-0.74\sqrt{n}}=\frac{\frac{\Bar{X}-\mu}{\sigma/\sqrt{n}}+\frac{\mu}{\sigma/\sqrt{n}}}{\sqrt{\frac{(n-1)S^2}{\sigma^2}\frac{1}{n-1}}}=\frac{\Bar{X}}{S/\sqrt{n}}\quad\sim\quad \tilde{T}(n-1,-0.74\sqrt{n})
+$$
+where $\tilde{T}(\gamma, \delta)$ denotes a noncentral $T$-distribution with degrees of freedom $\gamma$ and non-centrality $T$. Since we would like to not reject $H_0$ in 90\% of the cases, we have the critical region
+$$
+\left[t_{0.9,n-1,-0.74\sqrt{n}}\right)
+$$
+and the probability to conduct a Type II Error
+$$
+\beta := \int_{-\infty}^{t_{0.9,n-1,-0.74\sqrt{n}}}f_{T_{n-1}}(x) \d x
+$$ 
+And we have $\beta$ for this specific case with different $n$s:
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{ccc}
+        \toprule
+        $n$ & $1-\beta\mid\delta = Q_0 - 0.74\sigma$ \\
+        \midrule
+        10 & 0.839 \\
+        13 & 0.902 \\
+        50 & 1.000 \\
+        80 & 1.000 \\
+        125 & 1.000 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Power of Using the Noncentral Case as Null Hypothesis with Varying $n$}
+\end{table}
+
+\noindent which indicates that the test is quite powerful for $n\geq 50$, similar to the previous test that we have presented. Therefore, up to this point we can conclude with fairly good confidence that when performing Neyman-Pearson Test in this case, treating one hypothesis as either the null hypothesis or as the alternative hypothesis are equivalent.
+
+However, there are reasons for adopting the null hypothesis as the centered one instead of doing this in the alternative way described in this section. We also did not provide the OC Curves, which results from reasons described below. The two main reasons are the difference in obtaining the referential numbers, and the asymmetry between obtaining $\alpha$ and $\beta$ in the process. 
+
+\begin{itemize}
+    \item Noncentral $T$-distribution is much harder to calculate and behaves much less nicely. If one wants to provide a table for tests using noncentral $T$-distribution with $P$-values, one would need to perform the calculations on both sides as noncentral $T$-distribution is not symmetric. Moreover, the OC Curves for noncentral $T$-distribution is much harder to calculate as the PDF of that is more complex. That is the reason why we did not provide the OC Curves: Mathematica performed the calculation for more than half an hour without spitting any curve.
+    \item In this case we have much stronger restriction on the error that can be conducted in judging $alpha := \overline{Q} \geq Q_0$ than on judging $\beta := \overline{Q} \leq Q_0 - 0.74\sigma$. Therefore, if we determine $\beta$ in the first place, the expression for $\alpha$ will be an integral which is much harder to evaluate. Moreover, even if one has an OC Curve for this test, it would be nearly useless as it is hard to tell which value corresponds to $\alpha = 0.995$ unless the graph is zoomed in extraneously and in extreme precision. 
+\end{itemize}
+
+Therefore, it would be better to conduct Neyman-Pearson Test with the boundary case following $T$-distribution rather than doing that based on cases following noncentral $T$-distribution, as is described in the criterion \cite{JJF2005} and \cite{OIML2016}.
+
+\section{Verification of Sample Size $n$ and Type I Error Tolerance}
+
+In this section, we would finally address the problem that was raised when we first look into the criterion: do the sampling size $n$ specified in each criterion conforms to the general requirements that are described in corresponding standard. We would conduct the verification in three approaches: a simple alignment test; a verification based on calculation introduced in \cite{OIML2016}; and a final one referring to the organizing requirements (B.1) through (B.4) where we refer the calculations to the Appendix F in \cite{OIML2016}. In the last section we would also verify whether the standard of tolerable Type I defectives described in both \cite{JJF2005} and \cite{OIML2016} can satisfy the requirements.
+
+\subsection{Alignment Test of $n$ with Inference on Proportions}
+
+In discussions in this section, we will introduce a method to verify mere alignment of standard in different region that $N$ falls into; and we will compress the information of the samples to be qualified or not. After introducing the method, we will verify whether there is alignment in tables of both criterion.
+
+As the information is compressed quite a lot, this is only a preliminary test and we will present more precise tests in later sections. However, there are quite a bit insights that this method can yield, which will be elaborated as follows.
+
+\subsubsection{Introduction to Methods of Comparing Proportion}
+
+First of all, if the total size of shipment is quite small (less than or equal to 10), sampling is not necessary since examining all the individual package is sufficient enough and not costly. 
+
+For other cases, we are trying to make an inference on the proportion of the samples that do not fall short in the amount of product. But instead of having samples generating from a repeatable process, we are taking a portion from the population without replacing it. This causes a perturbation on the resulting sample variance. Therefore, in order to determine the appropriate sample size, we need to first investigate the sample variance in this case. We quote the following theorem:
+
+\begin{theorem}[Sample Variance for Sampling without Replacement]
+    Suppose that we draw $n$ samples from a population of size $N$ and variance $\sigma$. Then the sample variance is
+    $$
+    \Var(\overline{X}) = \dfrac{\sigma^2}{n}\cdot\dfrac{N-n}{N-1}
+    $$
+\end{theorem}
+
+We refers to \cite{Sampling} for the proof
+
+\begin{proof}
+    Recall how the proof is conducted in the case where $N$ is infinite:
+    $$
+    \Var[\overline{X}] = \Var\left[\frac{1}{n}\sum\limits_{k=1}^n X_k\right] = \dfrac{1}{n^2} \sum_{1\leq i,j\leq n}\Cov[X_i, X_j]
+    $$
+    In the case where $N$ is infinite, the influence of replacement is almost zero; and we could conclude that all the $X_i$s are independent, which gives 
+    $$
+    \Cov[X_i, X_j] = \begin{cases}
+        \Var[X_i] &, i = j\\
+        0 &, i\neq j 
+    \end{cases}
+    $$
+    But if $N$ is finite, the covariances should be calculated manually. Denote $\xi_i$ to be the values of the samples, $n_i$s the number of samples sharing value $\xi_i$ and $p_i$ the probability of obtaining value $\xi_i$, we have
+    \begin{align*}
+        \E[X_1 X_2] & = \sum\limits_{i, j}\xi_i \xi_j p_{ij} \\
+                    & = \sum\limits_{i}\xi_i p_i \sum\limits_{j} \xi_j \frac{p_{ij}}{p_i} \\
+                    & = \sum\limits_{i}\xi_i p_i \left(\sum\limits_{j}\left(\xi_j\frac{N p_j}{N-1}\right) - \frac{\xi_i}{N-1} \right) \\ 
+                    & = -\frac{1}{N-1}\underset{\E[X^2]}{\underbrace{\sum\limits_{i}\xi_i^2 p_i}} + \frac{N}{N-1}\left(\sum\limits_{j}\xi_j p_j\right)^2 \\
+                    & = -\frac{1}{N-1}\left(\sigma^2 + \mu^2\right) + \frac{N}{N-1}\mu^2 \\
+                    & = -\frac{1}{N-1}\sigma^2 + \mu^2
+    \end{align*}
+    which gives the covariance of two random samples
+    $$
+    \Cov[X_i, X_j] = \E[X_i X_j] - \E[X_i]\E[X_j] = -\frac{1}{N-1}\sigma^2
+    $$
+    and the variance of $\overline{X}$:
+    $$
+    \Var[\overline{X}] = \frac{1}{n}\sigma^2 + \frac{n-1}{n}\Cov[X_i, X_j] = \dfrac{\sigma^2}{n}\cdot\dfrac{N-n}{N-1}
+    $$
+\end{proof}
+
+Then we can infer the adequate size of sample for inference on proportion given that the population is finite with size $N$. 
+
+\begin{theorem}[Sample Size for Finite Population]
+    For a sample retrieved from a population of size $N$, to ensure the margin of error (half of the width of confidence interval) $d$ at confidence level $\alpha/2$ for two-sided test, we need the sample size $n$ to be at most
+    \begin{equation}\label{ssfinite}
+    n\approx \dfrac{z_{\alpha/2}N}{4d^2(N-1)+z_{\alpha/2}}
+    \end{equation}
+\end{theorem}
+
+\begin{proof}
+    The confidence interval of this estimation for the proportion is given as
+    $$
+    p = \hat{p}\pm z_{\alpha/2} \sqrt{\hat{p}(1-\hat{p})\cdot \dfrac{N-n}{n(N-1)}} =: \hat{p} \pm d
+    $$
+    Requiring $d\geq z_{\alpha/2} \sqrt{\hat{p}(1-\hat{p})\cdot \frac{N-n}{n(N-1)}}$ gives
+    $$
+    n\geq \dfrac{z_{\alpha/2}\hat{p}(1-\hat{p})N}{d^2(N-1)+z_{\alpha/2}\hat{p}(1-\hat{p})} = \dfrac{z_{\alpha/2}N}{\frac{d^2(N-1)}{\hat{p}(1-\hat{p})}+z_{\alpha/2}}
+    $$
+    where since $\hat{p}(1-\hat{p})\leq\frac{1}{4}$ the right hand side is bounded above by
+    $$
+    \dfrac{z_{\alpha/2}N}{\frac{d^2(N-1)}{\hat{p}(1-\hat{p})}+z_{\alpha/2}} \leq \dfrac{z_{\alpha/2}N}{4d^2(N-1)+z_{\alpha/2}}
+    $$
+    which gives the minimal size of samples to ensure margin of error $d$
+    $$
+    n\geq \dfrac{z_{\alpha/2}N}{4d^2(N-1)+z_{\alpha/2}}
+    $$
+\end{proof}
+
+With these tools at hand, we will now look into both criteria and verify whether the margin of error $d$ is consistent among all the cases.
+
+\subsubsection{Verification of \cite{JJF2005}}
+
+The choice of sample size $n$ based on knowledge of population size $N$ of \cite{JJF2005} is demonstrated in the following table. If the choices of numbers are reasonable, using \eqref{ssfinite} with $z_{\alpha/2} = z_{0.995} = 2.575$ we should see that the estimated $d$ values are consistent. 
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{ccc}
+        \toprule
+        $N$ & $n$ & Estimated $d$-value \\
+        \midrule
+        1-10 & $N$ & N/A \\
+        11-50 & 10 & [0.08, 0.23] \\
+        51-99 & 13 & [0.19, 0.21] \\
+        100-500 & 50 & [0.08, 0.11]\\ 
+        501-3200 & 80 & [0.08, 0.09]\\
+        $>$3200 & 125 & [0.08, 0.09] \\
+        \bottomrule
+    \end{tabular}
+    \caption{Tabulated Values for Population Size $N$ and Corresponding Sample Size $n$ in \cite{JJF2005}}
+\end{table}
+
+with which we have the conclusions
+
+\begin{itemize}
+    \item The test is organized aiming at tolerance of defective rate for large shipments ($N > 100$) of at most 
+    $$
+    D = d_{\text{test}} + d_{\text{tolerance}} = 11\% + \frac{5}{80} = 17\%
+    $$
+    where $d_{\text{test}}$ is the margin of error for the test, which is at most 0.11 for $N > 100$, and $d_{\text{tolerance}}$ is the tolerable defective rate in the samples examined, which is at most $5/80$ for $N\in[501, 3200]$. 
+    \item For small shipments $N \leq 100$, the defective rate allowed can be as high as
+    $$
+    D = d_{\text{test}} + d_{\text{tolerance}} = 21\% + \frac{1}{13} = 29\%
+    $$
+    with the same notation. Specifically, for $N\in[51, 99]$ the lower bound of largest allowed defective rate is 0.19, which is a relatively high defective rate. This choice of design may result from avoiding separating into too many cases for small $N$ or reasons specific with products with small shipments, or may be just an error in setting up the criterion.
+    \item In order to ensure the coherence exhibited in the rules, we suggest that the \textbf{$n$ for $N$ in 51-99 should be changed into 32}, which is solved with $d=0.08$ using \ref{ssfinite}. In following discussions on this table we will comment on the result with calibrated $n$ value separately besides using the originally tabled value. 
+\end{itemize}
+
+\subsubsection{Verification of \cite{OIML2016}}
+
+Similarly, we refer to Table 2 in \cite{OIML2016} to calculate the allowed margin of error $d$ in different $N$s using \eqref{ssfinite} with $z_{\alpha/2} = z_{0.995} = 2.575$. The results are as shown in the table below:
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{ccc}
+        \toprule
+        $N$ & $n$ & Estimated $d$-value \\
+        \midrule
+        1-20 & $N$ & N/A \\
+        21-40 & 32 & [0.00, 0.06] \\
+        41-60 & 35 & [0.05, 0.09] \\
+        61-80 & 47 & [0.06, 0.08]\\ 
+        81-100 & 49 & [0.07, 0.08]\\ 
+        101-200 & 64 & [0.06, 0.08]\\ 
+        201-300 & 67 & [0.08, 0.09]\\ 
+        301-400 & 81 & [0.07, 0.08]\\ 
+        401-500 & 81 & [0.08, 0.08]\\ 
+        $>$501 & 98 & [0.07, 0.08] \\
+        \bottomrule
+    \end{tabular}
+    \caption{Tabulated Values for Population Size $N$ and Corresponding Sample Size $n$ in \cite{OIML2016}}
+\end{table}
+
+In the test we can see that the margin of error $d$ is generally organized arount 0.08, which is quite consistent. Therefore, we could claim that there should not exist major errors in choosing the $n$ value according to the batch size $N$ given. 
+
+\subsection{Test of $n$ Using Sample Mean}
+
+
+
+\subsection{Verification of Type I Error Tolerance; Cross Reference of Sample Size $n$}
+
+
+\section{General Comparison between \cite{JJF2005} and \cite{OIML2016}}
+
+\section{Example of Content Inspection}
 
 \newpage
 \section{Appendix}
@@ -312,6 +520,7 @@ Without calculating explicitly, we can claim that the test is fairly powerful. S
     \begingroup  % Omit the "Reference" Title brought by thebibliography
     \renewcommand{\section}[2]{} 
     \begin{thebibliography}{99}
+        \bibitem{Sampling} Moulinath Banerjee. Simple Random Sampling. Lecture Notes. University of Michigan. 2012. Available from \href{https://dept.stat.lsa.umich.edu/~moulib/sampling.pdf}{https://dept.stat.lsa.umich.edu/~moulib/sampling.pdf} [Online; accessed 12-April-2023]
         \bibitem{Ho2023} Horst Hohberger. Probabilistic Methods in Engineering (lecture slides). University of Michigan - Shanghai Jiao Tong University Joint Institute. Spring 2023. (An earlier version can be found at \href{http://ece401.ji.sjtu.edu.cn/ewExternalFiles/ve401\_all\_lecture\_slides.pdf}{http://ece401.ji.sjtu.edu.cn/ewExternalFiles/ve401\_all\_lecture\_slides.pdf})
         \bibitem{JJF2005} AQSIQ/MTC1. Rules of metrological testing for net quantities of products in prepackages with fixed content. Technical Report JJF 1070-2005, Chinese Metrology Press, 2005. Available from \href{http://www.gdifi.org.cn/spbz/437.jhtml}{http://www.gdifi.org.cn/spbz/437.jhtml} [Online; accessed 17-April-2023].
 		\bibitem{OIML2016} Quantity of product in prepackages. Technical Report OIML R 87, International Organization of Legal Metrology (OIML), 2016. Available from \href{https://www.oiml.org/en/files/pdf\_r/r087-e16.pdf}{https://www.oiml.org/en/files/pdf\_r/r087-e16.pdf} [Online; accessed 25-March-2023].
