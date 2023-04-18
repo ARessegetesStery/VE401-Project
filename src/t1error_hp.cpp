@@ -114,18 +114,18 @@ int main()
 
     /*  Generating k in Table 2 of OIML R 87:2016   */
 
-    // for (int cnt = 40; cnt <= 60; ++cnt)
-    //     t1Tolerance(cnt, 35, fout);
-    // for (int cnt = 61; cnt <= 80; ++cnt)
-    //     t1Tolerance(cnt, 47, fout);
-    // for (int cnt = 81; cnt <= 100; ++cnt)
-    //     t1Tolerance(cnt, 49, fout);
-    // for (int cnt = 101; cnt <= 200; ++cnt)
-    //     t1Tolerance(cnt, 64, fout);
-    // for (int cnt = 201; cnt <= 300; ++cnt)
-    //     t1Tolerance(cnt, 67, fout);
-    // for (int cnt = 301; cnt <= 400; ++cnt)
-    //     t1Tolerance(cnt, 81, fout);
+    for (int cnt = 40; cnt <= 60; ++cnt)
+        t1Tolerance(cnt, 35, fout);
+    for (int cnt = 61; cnt <= 80; ++cnt)
+        t1Tolerance(cnt, 47, fout);
+    for (int cnt = 81; cnt <= 100; ++cnt)
+        t1Tolerance(cnt, 49, fout);
+    for (int cnt = 101; cnt <= 200; ++cnt)
+        t1Tolerance(cnt, 64, fout);
+    for (int cnt = 201; cnt <= 300; ++cnt)
+        t1Tolerance(cnt, 67, fout);
+    for (int cnt = 301; cnt <= 400; ++cnt)
+        t1Tolerance(cnt, 81, fout);
 
     /*  Generating k in 4.3.2 of JJF 1070-2005   */
 
